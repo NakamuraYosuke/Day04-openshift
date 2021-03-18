@@ -75,3 +75,79 @@ Podが2つになりました。
 ```
 $ crc console
 ```
+ログインしたら、右側のWorkloadsメニューからDeploymentsを選択します。
+![](https://raw.githubusercontent.com/NakamuraYosuke/Day04-openshift/main/images/workload.png)
+
+Podが2つになっていることが確認できます。
+
+コンソールからPodを増やしてみましょう。
+
+作成したtomcatのdeploymentを選択します。
+![](https://raw.githubusercontent.com/NakamuraYosuke/Day04-openshift/main/images/podscalebefore.png)
+Podの円の横にある^をクリックし、Pod数を5にします。
+
+![](https://raw.githubusercontent.com/NakamuraYosuke/Day04-openshift/main/images/podscaleafter.png)
+
+Podの円が青くなれば成功です。
+
+次にターミナルでも確認してみます。
+```
+$ oc get pod
+```
+```
+NAME                      READY   STATUS    RESTARTS   AGE
+tomcat-75b4656685-2ghnh   1/1     Running   0          18m
+tomcat-75b4656685-d2764   1/1     Running   0          8m20s
+tomcat-75b4656685-k2rfk   1/1     Running   0          8m21s
+tomcat-75b4656685-l2vwf   1/1     Running   0          15m
+tomcat-75b4656685-tw9xp   1/1     Running   0          8m20s
+```
+5つのPodが作成されていることが確認できました。
+
+Podの他にも、Deployment、Service、ImageStreamが作成されています。
+```
+$ oc get deployment
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+tomcat   5/5     5            5           20m
+
+$ oc get service
+NAME     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+tomcat   ClusterIP   10.217.5.188   <none>        8080/TCP   20m
+
+$ oc get imagestream
+NAME     IMAGE REPOSITORY                                                          TAGS     UPDATED
+tomcat   default-route-openshift-image-registry.apps-crc.testing/kubetest/tomcat   latest   20 minutes ago
+```
+
+## ImageStream
+OpenShiftにはKubernetesに無いImageStreamというオブジェクトがあります。
+ImageStreamは内部的にタグに対応するDockerレジストリを管理し、それに追加で機能を提供します。
+
+先ほど生成された、tomcatのイメージストリームの詳細を確認してみます。
+
+```
+$ oc describe is tomcat
+```
+```
+Name:			tomcat
+Namespace:		kubetest
+Created:		24 minutes ago
+Labels:			app=tomcat
+			app.kubernetes.io/component=tomcat
+			app.kubernetes.io/instance=tomcat
+Annotations:		openshift.io/generated-by=OpenShiftNewApp
+			openshift.io/image.dockerRepositoryCheck=2021-03-18T16:12:52Z
+Image Repository:	default-route-openshift-image-registry.apps-crc.testing/kubetest/tomcat
+Image Lookup:		local=false
+Unique Images:		1
+Tags:			1
+
+latest
+  tagged from tomcat:latest
+
+  * tomcat@sha256:02f0c6909b28a287a3472421c135fabb1689b3e12b3c5ae588a3f6f5fe910048
+      24 minutes ago
+```
+
+`new-app`した際にDocker Hubから取得したtomcat:latestのコンテナイメージは、自身の環境のレジストリに追加されていることが確認できます。
+
