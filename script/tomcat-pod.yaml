@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat
+  labels:
+    name: tomcat
+spec:
+  containers:
+    - resources:
+      image: tomcat:latest
+      name: tomcat
