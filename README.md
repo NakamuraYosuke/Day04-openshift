@@ -348,3 +348,66 @@ $ curl -s developer-helloworld-developer-s2i.apps-crc.testing
 Hello, World! php version is 7.3.20
 A change is a coming!
 ```
+
+
+## 演習問題
+- 下記のphpファイルをindex.phpという名前で保存し自身のGitHubリポジトリへpushします。
+```
+<html>
+<head>
+      <title>Converting Temperatures</title>
+      <meta charset="utf-8">
+</head>
+<body>
+      <form name="form1" method="POST" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+
+<table>
+<tr>
+    <td>Enter the temperature to convert:</td>
+    <td><input type="text" name="temp" id="temp" size="10"></td>
+</tr>
+
+<tr>
+    <td>Convert to:</td>
+    <td><select name="scale" id="scale" size="1">
+               <option disabled>Select the scale</option>
+               <option value="c">Celsius</option>
+               <option value="f">Fahrenheit</option>
+        </select>
+    </td>
+</tr>
+
+<tr>
+    <td><input type="submit" name="btnConvert" id="btnConvert" value="Convert"></td>
+    <td><input type="reset" name="btnReset" id="btnReset" value="Reset"></td>
+</tr>
+
+
+
+</form>
+
+<?php
+ function convert($value, $type){
+    if($type== "f"){
+       return (((9/5)*$value) +(32));
+   }
+    elseif ($type== "c"){
+       return (($value - 32) * (5/9));
+   }
+}
+
+if (isset($_POST['btnConvert'])) {
+$temp = $_POST['temp'];
+$scale = $_POST['scale'];
+$converted = convert($temp, $scale);
+echo "The original temperature, $temp, converted is $converted.";
+}
+?>
+
+    </body>
+</html>
+```
+- プロジェクト名は`developer-ocp`とします。
+- 使用するイメージストリームタグはphp:7.3とします。
+- phpアプリケーションのサービスをし、`temps-developer-ocp.apps-crc.testing`という名前で公開します。
+- webブラウザから該当アプリケーションにアクセスします。
