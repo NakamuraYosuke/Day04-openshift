@@ -218,12 +218,24 @@ $ oc login -u developer -p developer
 $ oc new-project developer-s2i
 ```
 
-php:7.3のイメージストリームを用いて、
-https://github.com/RedHatTraining/DO180-apps
-にある`php-helloworld`を`php-helloworld`という名前のPodで作成します。
+次に、以下のphpファイルを自身の任意のディレクトリに`index.php`という名前で保存します。
+```
+<?php
+print "Hello, World! php version is " . PHP_VERSION . "\n";
+?>
+```
+
+この`index.php`を自身のGitHubリポジトリにpushします。
+```
+$ git add .
+$ git commit -m "first commit"
+$ git push -u origin main
+```
+
+php:7.3のイメージストリームを用いて、`php-helloworld`を`php-helloworld`という名前のPodで作成します。
 
 ```
-$ oc new-app -i php:7.3 --name=php-helloworld https://github.com/RedHatTraining/DO180-apps --context-dir php-helloworld
+（例）$ oc new-app -i php:7.3 --name=php-helloworld https://github.com/NakamuraYosuke/Day04-openshift --context-dir labs
 ```
 
 ビルドが完了しアプリケーションがデプロイされるまで待機します。
@@ -315,3 +327,24 @@ $ curl -s developer-helloworld-developer-s2i.apps-crc.testing
 Hello, World! php version is 7.3.20
 ```
 
+次に、先ほど保存したindex.phpファイルを編集します。
+下記のファイルの通り編集します。
+```
+<?php
+print "Hello, World! php version is " . PHP_VERSION . "\n"; print "A change is a coming!\n";
+?>
+```
+
+先ほどと同様に、自身のGitHubリポジトリへ変更をpushします。
+
+新規S2Iビルドプロセスを開始し、ビルドとデプロイが完了するまで待機します。
+```
+$ oc start-build php-helloworld
+```
+
+変更が反映されていることを確認します。
+```
+$ curl -s developer-helloworld-developer-s2i.apps-crc.testing
+Hello, World! php version is 7.3.20
+A change is a coming!
+```
