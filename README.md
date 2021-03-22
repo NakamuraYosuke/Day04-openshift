@@ -190,6 +190,7 @@ BuildConfig Podの役割は、OpenShift でイメージを作成しそれを内�
 ソースコードまたはコンテンツの更新には、通常イメージの更新を保証する新規のビルドが必要です。
 
 DeploymentConfig Podの役割は、PodをOpenShift へデプロイすることです。DeploymentConfig Podを実行した結果、内部コンテナーレジストリーにデプロイされたイメージを含むPodが作成されます。
+
 既存の実行中のPod は、DeploymentConfigリソースの設定方法に応じて破棄される可能性があります。
 
 BuildConfig リソースはコンテナーイメージを作成または更新します。
